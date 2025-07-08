@@ -12,7 +12,7 @@ with open('seatDims.json','r') as f:
     SEAT_HEIGHT = seatDims["SEAT_HEIGHT"]
     SEAT_WIDTH = seatDims["SEAT_WIDTH"]
 
-IMAGE_PATH =  'resnet-approach/emptyImages'#'cam-test/just-cerimony'#'cam-test/edm'
+IMAGE_PATH =  'emptyImages'#'cam-test/just-cerimony'#'cam-test/edm'
 images = listdir(IMAGE_PATH)
 assert len(images) > 0, "Can't find images!"
 
