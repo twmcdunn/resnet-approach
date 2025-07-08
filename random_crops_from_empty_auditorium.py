@@ -21,7 +21,7 @@ numOfEdmanNegatives = int(numOfNegatives / 2)
 
 FIRST_INDEX = (numOfNegatives - numOfEdmanNegatives) + 1
 for i in range(numOfEdmanNegatives):
-    imgPath = random.choice(images)
+    imgPath = IMAGE_PATH + '/' + random.choice(images)
     img = cv.imread(imgPath)
     height, width = img.shape[:2]
     y = random.randrange(0,height - SEAT_HEIGHT)
