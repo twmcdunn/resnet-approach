@@ -11,6 +11,10 @@ ann_file = os.path.join(coco_root, 'annotations/instances_train2017.json')
 img_dir = os.path.join(coco_root, 'train2017')
 output_dir = './coco_personal_belongings'
 
+assert os.path.exists(ann_file), "CAN't find annotation file"
+assert os.path.exists(img_dir), "cant find image directory"
+print("Directories and files found.")
+
 # Create output directory
 os.makedirs(output_dir, exist_ok=True)
 
@@ -18,9 +22,9 @@ os.makedirs(output_dir, exist_ok=True)
 coco = COCO(ann_file)
 
 # Define personal belongings categories
-target_categories = ['backpack', 'handbag', 'suitcase', 'umbrella', 'laptop', 'cell phone', 'book', 'bottle']
+target_categories = ['backpack', 'handbag', 'suitcase', 'chair', 'umbrella', 'laptop', 'cell phone', 'book', 'bottle']
 category_ids = coco.getCatIds(catNms=target_categories)
-print("Category IDs:" + category_ids)
+print("Category IDs:" + str(category_ids))
 assert len(category_ids) > 0, "Can't find categories!"
 
 
@@ -29,10 +33,19 @@ print([cat['name'] for cat in categories])
 
 
 # Get image IDs that contain at least one of the target categories
-image_ids = coco.getImgIds(catIds=category_ids)
+image_ids_with_targets = set()
+for cat_id in category_ids:
+    image_ids = coco.getImgIds(catIds=[cat_id])
+    image_ids_with_targets.update(image_ids)
+
+image_ids_with_person = set(coco.getImgIds(coco.getCatIds(catNms=['person'])))
+
+image_ids = image_ids_with_targets - image_ids_with_person
 
 print(f"Found {len(image_ids)} images with target categories.")
 assert len(image_ids) > 0, "Can't find images with target categories!"
+
+#assert 0 == 1, "EXITING SO YOU CAN LOOK FOR PEOPLE IN CATEGORIES"
 
 # Define transform: resize with preserved aspect ratio, then random crop
 transform = transforms.Compose([
