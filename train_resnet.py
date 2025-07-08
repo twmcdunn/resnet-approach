@@ -1,4 +1,4 @@
-#from torchvision.datasets import BinaryImageDataset
+from torchvision.datasets import ImageFolder
 from torchvision import models
 import torch.nn as nn
 import torchvision.transforms as transforms
@@ -30,9 +30,9 @@ val_transforms = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
-train_dataset = BinaryImageDataset("./resNet_Images/train")
-val_dataset = BinaryImageDataset("./resNet_Images/val")
-test_dataset = BinaryImageDataset("./resNet_Images/test")
+train_dataset = ImageFolder("./resNet_Images/train", transform=train_transforms)
+val_dataset = ImageFolder("./resNet_Images/val", transform=val_transforms)
+test_dataset = ImageFolder("./resNet_Images/test")
 
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
