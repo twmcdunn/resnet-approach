@@ -1,4 +1,4 @@
-from torchvision.datasets import BinaryImageDataset
+#from torchvision.datasets import BinaryImageDataset
 from torchvision import models
 import torch.nn as nn
 import torchvision.transforms as transforms
