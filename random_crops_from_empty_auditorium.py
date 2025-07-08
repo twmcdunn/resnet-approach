@@ -16,7 +16,7 @@ IMAGE_PATH =  'emptyImages'#'cam-test/just-cerimony'#'cam-test/edm'
 images = listdir(IMAGE_PATH)
 assert len(images) > 0, "Can't find images!"
 
-numOfNegatives = int(12324 / 2)
+numOfNegatives = 12324
 numOfEdmanNegatives = int(numOfNegatives / 2)
 
 FIRST_INDEX = (numOfNegatives - numOfEdmanNegatives) + 1
