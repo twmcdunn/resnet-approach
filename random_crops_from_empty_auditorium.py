@@ -16,8 +16,11 @@ IMAGE_PATH =  'resnet-approach/emptyImages'#'cam-test/just-cerimony'#'cam-test/e
 images = listdir(IMAGE_PATH)
 assert len(images) > 0, "Can't find images!"
 
-FIRST_INDEX = 100
-for i in range(5000):
+numOfNegatives = int(12324 / 2)
+numOfEdmanNegatives = int(numOfNegatives / 2)
+
+FIRST_INDEX = (numOfNegatives - numOfEdmanNegatives) + 1
+for i in range(numOfEdmanNegatives):
     img = random.choice(images)
     height, width = img.shape[:2]
     y = random.randrange(0,height - SEAT_HEIGHT)
