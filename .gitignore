@@ -1,3 +1,5 @@
 coco/*
 .venv
 coco_personal_belongings/*
+resNet_Images/*
+negativesFromEdman/*
