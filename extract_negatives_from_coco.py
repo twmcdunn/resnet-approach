@@ -20,9 +20,19 @@ coco = COCO(ann_file)
 # Define personal belongings categories
 target_categories = ['backpack', 'handbag', 'suitcase', 'umbrella', 'laptop', 'cell phone', 'book', 'bottle']
 category_ids = coco.getCatIds(catNms=target_categories)
+print("Category IDs:" + category_ids)
+assert len(category_ids) > 0, "Can't find categories!"
+
+
+categories = coco.loadCats(coco.getCatIds())
+print([cat['name'] for cat in categories])
+
 
 # Get image IDs that contain at least one of the target categories
 image_ids = coco.getImgIds(catIds=category_ids)
+
+print(f"Found {len(image_ids)} images with target categories.")
+assert len(image_ids) > 0, "Can't find images with target categories!"
 
 # Define transform: resize with preserved aspect ratio, then random crop
 transform = transforms.Compose([
