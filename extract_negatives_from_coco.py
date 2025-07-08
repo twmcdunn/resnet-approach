@@ -49,7 +49,7 @@ assert len(image_ids) > 0, "Can't find images with target categories!"
 
 # Define transform: resize with preserved aspect ratio, then random crop
 transform = transforms.Compose([
-    transforms.Resize(180),  # Resize shorter side to 180, preserving aspect ratio
+    transforms.Resize(250),  # Resize the vertical to 250, preserving aspect ratio
     transforms.RandomCrop((155, 204)),  # Final target size
 ])
 
