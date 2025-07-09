@@ -49,46 +49,46 @@ for n in range(3):
         
         negsFromImg = 0
 
-        while negsFromImg < 0.01: 
-            centX = 0.5#random.random()
-            centY = 0.5#random.random()
-            w = random.random()
-            h = random.random()
+        
+        centX = 0.5#random.random()
+        centY = 0.5#random.random()
+        w = random.random()
+        h = random.random()
 
-            centX *= width
-            centY *= height
-            w *= width
-            h *= height
-            w = max(w,230)
-            h = max(h, 230)
-            randCrop = (centX - w / 2, centY - h / 2, centX + w/2, centY + h/2)
+        centX *= width
+        centY *= height
+        w *= width
+        h *= height
+        w = max(w,230)
+        h = max(h, 230)
+        randCrop = (centX - w / 2, centY - h / 2, centX + w/2, centY + h/2)
 
-            overlap = False
-            
-            width, height = img.size
-            with open(labelsDir, "r") as labelFile:
+        overlap = False
+        
+        width, height = img.size
+        with open(labelsDir, "r") as labelFile:
+            line = labelFile.readline()
+            while line != "":
+                annot = line.rstrip("\n").rsplit(" ")
+                centX, centY, w, h = map(float,annot[1:])
+
+                #scale according to img dimensions
+                centX *= width
+                centY *= height
+                w *= width
+                h *= height
+
+                dims = (centX - w / 2, centY - h / 2, centX + w/2, centY + h/2)
+                if do_boxes_overlap(dims, randCrop):
+                    overlap = True
+                    break
+                
                 line = labelFile.readline()
-                while line != "":
-                    annot = line.rstrip("\n").rsplit(" ")
-                    centX, centY, w, h = map(float,annot[1:])
-
-                    #scale according to img dimensions
-                    centX *= width
-                    centY *= height
-                    w *= width
-                    h *= height
-
-                    dims = (centX - w / 2, centY - h / 2, centX + w/2, centY + h/2)
-                    if do_boxes_overlap(dims, randCrop):
-                        overlap = True
-                        break
-                    
-                    line = labelFile.readline()
-            if not overlap:
-                croppedImg = img.crop(randCrop)
-                croppedImg.save(outDir + "/" + str(negCount) + ".jpg")
-                negsFromImg += 1
-                negCount += 1
+        if not overlap:
+            croppedImg = img.crop(randCrop)
+            croppedImg.save(outDir + "/" + str(negCount) + ".jpg")
+            negsFromImg += 1
+            negCount += 1
 
         if negCount >= 1500:
             break
