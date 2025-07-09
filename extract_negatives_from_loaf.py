@@ -3,59 +3,6 @@ from PIL import Image
 import random
 
 dirArr = ['/train','/val','/test']
-avePersPerImg = 0
-imgCount = 0
-for n in range(3):
-    imgFolder = 'loaf_data/images' + dirArr[n]
-
-    loafImgs = listdir(imgFolder)
-    imgCount += len(loafImgs)
-
-    personCount = 0
-    outDir = 'loaf_data/extracts/'+dirArr[n]+'/person'
-
-    for i in range(len(loafImgs)):
-        if i % 10000 == 0:
-            print(str(i/len(loafImgs)) + ' imgs in ' + dirArr[n] + ' positives')
-        imgFile = loafImgs[i]
-        imgDir = imgFolder + "/" + imgFile
-        img = Image.open(imgDir)
-        #print("IMG OPJECT: " + str(img))
-        labelsDir = imgDir.replace("images", "labels").replace('jpg','txt')
-        #print("LABEL: " + labelsDir)
-        personsInImage = 0
-        with open(labelsDir, "r") as labelFile:
-            line = labelFile.readline()
-            while line != "":
-                annot = line.rstrip("\n").rsplit(" ")
-                centX, centY, w, h = map(float,annot[1:])
-
-                #scale according to img dimensions
-                width, height = img.size
-                centX *= width
-                centY *= height
-                w *= width
-                h *= height
-
-                dims = (centX - w / 2, centY - h / 2, centX + w/2, centY + h/2)
-                #print("DIMS: " + str(dims))
-                img = img.crop(dims)
-                #print("CROPPED: " + str(img))
-                if w > 230 and h > 230:
-                    try:
-                        img.save(outDir + "/" + str(personCount) + ".jpg")
-                        personsInImage += 1
-                    except ValueError:
-                        print("BAD DIMS")
-                    personCount += 1
-                line = labelFile.readline()
-            avePersPerImg += personsInImage
-
-avePersPerImg /= imgCount
-print("pers per img: " + str(avePersPerImg))
-with open("personsPerImage.txt","w") as f:
-    f.write(str(avePersPerImg))
-
 def do_boxes_overlap(box1, box2):
     """
     Check if two bounding boxes overlap.
@@ -104,8 +51,8 @@ for n in range(3):
         while negsFromImg < 0.01: 
             centX = random.random()
             centY = random.random()
-            w = random.random()
-            h = random.random()
+            w = 0.5#random.random()
+            h = 0.5#random.random()
 
             centX *= width
             centY *= height
@@ -141,5 +88,8 @@ for n in range(3):
                 croppedImg.save(outDir + "/" + str(negCount) + ".jpg")
                 negsFromImg += 1
                 negCount += 1
+
+        if negCount >= 1500:
+            break
 
         
