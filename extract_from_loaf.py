@@ -11,7 +11,7 @@ outDir = 'loaf_data/extracts/train/person'
 
 for imgFile in loafImgs:
     imgDir = imgFolder + "/" + imgFile
-    img = Image.open()
+    img = Image.open(imgDir)
     labelsDir = imgDir.replace("images", "labels").replace('jpg','txt')
     print("LABEL: " + labelsDir)
     with open(labelsDir, "r") as labelFile:
