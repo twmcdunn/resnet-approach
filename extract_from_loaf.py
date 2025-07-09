@@ -12,6 +12,7 @@ outDir = 'loaf_data/extracts/train/person'
 for imgFile in loafImgs:
     imgDir = imgFolder + "/" + imgFile
     img = Image.open(imgDir)
+    print("IMG OPJECT: " + img)
     labelsDir = imgDir.replace("images", "labels").replace('jpg','txt')
     print("LABEL: " + labelsDir)
     with open(labelsDir, "r") as labelFile:
@@ -27,7 +28,10 @@ for imgFile in loafImgs:
             w *= width
             h *= height
 
-            img = img.crop((centX - w / 2, centY - h / 2, centX + w/2, centY + h/2))
+            dims = (centX - w / 2, centY - h / 2, centX + w/2, centY + h/2)
+            print("DIMS: " + dims)
+            img = img.crop(dims)
+            print("CROPPED: " + img)
             img.save(outDir + "/" + str(personCount) + ".jpg")
             line = labelFile.readline()
 
