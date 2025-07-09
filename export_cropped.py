@@ -37,6 +37,7 @@ index = 0
 for i in range(len(seat_coords)):
     seatx, seaty = seat_coords[i]
     for image_index in range(len(images), int(len(images) / 6)):
+        print("IMAGE InDEX " + str(image_index))
         if seat_numbers[i] in targetsNums:
             classification = 'non_person'
             break
@@ -49,5 +50,5 @@ for i in range(len(seat_coords)):
         path = 'resNet_Images/train/person/chap' + str(index) + '.jpg'
         cv.imwrite(path,seat_cropped)
         index += 1
-    print(f"PROGRESS{100 * i / len(seat_coords)} %")
+    #print(f"PROGRESS{100 * i / len(seat_coords)} %")
 
