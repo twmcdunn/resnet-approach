@@ -32,7 +32,11 @@ for imgFile in loafImgs:
             print("DIMS: " + str(dims))
             img = img.crop(dims)
             print("CROPPED: " + str(img))
-            img.save(outDir + "/" + str(personCount) + ".jpg")
+            try:
+                img.save(outDir + "/" + str(personCount) + ".jpg")
+            except ValueError:
+                print("BAD DIMS")
+            personCount += 1
             line = labelFile.readline()
 
         
