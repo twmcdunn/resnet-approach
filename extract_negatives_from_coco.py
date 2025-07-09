@@ -4,7 +4,6 @@ from torchvision import transforms
 from PIL import Image
 from pycocotools.coco import COCO
 from tqdm import tqdm
-import cv2
 
 # Paths
 coco_root = './coco'
@@ -59,18 +58,13 @@ for img_id in tqdm(image_ids, desc="Extracting and transforming images"):
     img_info = coco.loadImgs(img_id)[0]
     img_path = os.path.join(img_dir, img_info['file_name'])
     try:
-        img = cv2.imread(img_path)#Image.open(img_path).convert('RGB')
+        img = Image.open(img_path).convert('RGB')
         ann_ids = coco.getAnnIds(imgIds=[img_id])
         anns = coco.loadAnns(ann_ids)
         for ann in anns:
             if ann['category_id'] in category_ids:
-                x, y, w, h = ann['bbox']
-                x, y, w, h = map(int, [x, y, w, h])
-                height, width = img.shape[:2]
-                x2, y2 = min(x + w, width), min(y + h, height)
-                x, y = max(x, 0), max(y, 0)
-                
-                cropped = img[y:y2, x:x2]
+                x,y,w,h = ann['bbox']
+                cropped = img.crop((x,y,x+w,y+h))
                 cropped = transform(cropped)
                 cropped.save(os.path.join(output_dir, img_info['file_name'] + "_" + ann['category_id']))
     except Exception as e:
