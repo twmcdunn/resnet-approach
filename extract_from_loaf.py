@@ -9,8 +9,9 @@ loafImgs = listdir(imgFolder)
 personCount = 0
 outDir = 'loaf_data/extracts/train/person'
 
-for imgDir in loafImgs:
-    img = Image.open(imgFolder + "/" + imgDir)
+for imgFile in loafImgs:
+    imgDir = imgFolder + "/" + imgFile
+    img = Image.open()
     labelsDir = imgDir.replace("images", "labels").replace('jpg','txt')
     print("LABEL: " + labelsDir)
     with open(labelsDir, "r") as labelFile:
