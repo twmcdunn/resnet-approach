@@ -65,7 +65,12 @@ for img_id in tqdm(image_ids, desc="Extracting and transforming images"):
         for ann in anns:
             if ann['category_id'] in category_ids:
                 x, y, w, h = ann['bbox']
-                cropped = img[y:y+h, x:x+w]
+                x, y, w, h = map(int, [x, y, w, h])
+                height, width = img.shape[:2]
+                x2, y2 = min(x + w, width), min(y + h, height)
+                x, y = max(x, 0), max(y, 0)
+                
+                cropped = img[y:y2, x:x2]
                 cropped = transform(cropped)
                 cropped.save(os.path.join(output_dir, img_info['file_name'] + "_" + ann['category_id']))
     except Exception as e:
