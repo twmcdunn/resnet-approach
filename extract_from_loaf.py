@@ -15,7 +15,7 @@ for n in range(3):
     outDir = 'loaf_data/extracts/'+dirArr[n]+'/person'
 
     for i in range(len(loafImgs)):
-        if i % 100 == 0:
+        if i % 10000 == 0:
             print(str(i/len(loafImgs)) + ' imgs in ' + dirArr[n] + ' positives')
         imgFile = loafImgs[i]
         imgDir = imgFolder + "/" + imgFile
@@ -88,7 +88,7 @@ for n in range(3):
     outDir = 'loaf_data/extracts/'+dirArr[n]+'/not_person'
 
     for i in range(len(loafImgs)):
-        if i % 100 == 0:
+        if i % 10000 == 0:
             print(str(i/len(loafImgs)) + ' imgs in ' + dirArr[n] + ' negatives')
         imgFile = loafImgs[i]
         imgDir = imgFolder + "/" + imgFile
