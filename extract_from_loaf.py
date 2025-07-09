@@ -2,14 +2,15 @@ from os import listdir
 from PIL import Image
 
 dirArr = ['/train','/val','/test']
+imgFolder = 'loaf_data/images' + dirArr[0]
 
-loafImgs = listdir('loaf_data/images' + dirArr[0])
+loafImgs = listdir(imgFolder)
 
 personCount = 0
 outDir = 'loaf_data/extracts/train/person'
 
 for imgDir in loafImgs:
-    img = Image.open(imgDir)
+    img = Image.open(imgFolder + "/" + imgDir)
     labelsDir = imgDir.replace("images", "labels")
     with open(labelsDir, "r") as labelFile:
         line = labelFile.readline()
