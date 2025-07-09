@@ -66,6 +66,6 @@ for img_id in tqdm(image_ids, desc="Extracting and transforming images"):
                 x,y,w,h = ann['bbox']
                 cropped = img.crop((x,y,x+w,y+h))
                 cropped = transform(cropped)
-                cropped.save(os.path.join(output_dir, img_info['file_name'] + "_" + str(ann['category_id'])))
+                cropped.save(os.path.join(output_dir, str(ann['category_id']) + "_" + img_info['file_name']))
     except Exception as e:
         print(f"Failed to process {img_path}: {e}")
