@@ -28,7 +28,7 @@ for imgFile in loafImgs:
             h *= height
 
             img = img.crop((centX - w / 2, centY - h / 2, centX + w/2, centY + h/2))
-            img.save(outDir + "/" + personCount + ".jpg")
+            img.save(outDir + "/" + str(personCount) + ".jpg")
             line = labelFile.readline()
 
         
