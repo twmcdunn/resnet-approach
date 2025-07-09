@@ -59,7 +59,13 @@ for img_id in tqdm(image_ids, desc="Extracting and transforming images"):
     img_path = os.path.join(img_dir, img_info['file_name'])
     try:
         img = Image.open(img_path).convert('RGB')
-        img = transform(img)
-        img.save(os.path.join(output_dir, img_info['file_name']))
+        ann_ids = coco.getAnnIds(imgIds=[img_id])
+        anns = coco.loadAnns(ann_ids)
+        for ann in anns:
+            if ann['category_id'] in category_ids:
+                x, y, w, h = ann['bbox']
+                cropped = img[y:y+h, x:x+w]
+                cropped = transform(cropped)
+                cropped.save(os.path.join(output_dir, img_info['file_name'] + "_" + ann['category_id']))
     except Exception as e:
         print(f"Failed to process {img_path}: {e}")
