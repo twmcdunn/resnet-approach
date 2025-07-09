@@ -12,9 +12,9 @@ outDir = 'loaf_data/extracts/train/person'
 for imgFile in loafImgs:
     imgDir = imgFolder + "/" + imgFile
     img = Image.open(imgDir)
-    print("IMG OPJECT: " + str(img))
+    #print("IMG OPJECT: " + str(img))
     labelsDir = imgDir.replace("images", "labels").replace('jpg','txt')
-    print("LABEL: " + labelsDir)
+    #print("LABEL: " + labelsDir)
     with open(labelsDir, "r") as labelFile:
         line = labelFile.readline()
         while line != "":
@@ -29,9 +29,9 @@ for imgFile in loafImgs:
             h *= height
 
             dims = (centX - w / 2, centY - h / 2, centX + w/2, centY + h/2)
-            print("DIMS: " + str(dims))
+            #print("DIMS: " + str(dims))
             img = img.crop(dims)
-            print("CROPPED: " + str(img))
+            #print("CROPPED: " + str(img))
             if w > 230 and h > 230:
                 try:
                     img.save(outDir + "/" + str(personCount) + ".jpg")
