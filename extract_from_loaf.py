@@ -18,7 +18,7 @@ for imgFile in loafImgs:
         line = labelFile.readline()
         while line != "":
             annot = line.rstrip("\n").rsplit(" ")
-            centX, centY, w, h = map(int,annot[1:])
+            centX, centY, w, h = map(float,annot[1:])
 
             #scale according to img dimensions
             width, height = img.size
