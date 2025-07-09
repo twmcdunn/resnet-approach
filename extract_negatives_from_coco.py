@@ -4,6 +4,7 @@ from torchvision import transforms
 from PIL import Image
 from pycocotools.coco import COCO
 from tqdm import tqdm
+import cv2
 
 # Paths
 coco_root = './coco'
@@ -58,7 +59,7 @@ for img_id in tqdm(image_ids, desc="Extracting and transforming images"):
     img_info = coco.loadImgs(img_id)[0]
     img_path = os.path.join(img_dir, img_info['file_name'])
     try:
-        img = Image.open(img_path).convert('RGB')
+        img = cv2.imread(img_path)#Image.open(img_path).convert('RGB')
         ann_ids = coco.getAnnIds(imgIds=[img_id])
         anns = coco.loadAnns(ann_ids)
         for ann in anns:
