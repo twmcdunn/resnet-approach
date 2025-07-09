@@ -53,6 +53,8 @@ for n in range(3):
 
 avePersPerImg /= imgCount
 print("pers per img: " + str(avePersPerImg))
+with open("personsPerImage.txt","w") as f:
+    f.write(str(avePersPerImg))
 
 def do_boxes_overlap(box1, box2):
     """
