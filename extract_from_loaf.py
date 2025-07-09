@@ -80,7 +80,7 @@ def do_boxes_overlap(box1, box2):
     return True  # Boxes overlap
 
 
-negativesCount = 0
+negCount = 0
 for n in range(3):
     imgFolder = 'loaf_data/images' + dirArr[n]
 
@@ -138,7 +138,8 @@ for n in range(3):
                     line = labelFile.readline()
             if not overlap:
                 croppedImg = img.crop(randCrop)
-                croppedImg.save(outDir + "/" + str(personCount) + ".jpg")
+                croppedImg.save(outDir + "/" + str(negCount) + ".jpg")
                 negsFromImg += 1
+                negCount += 1
 
         
