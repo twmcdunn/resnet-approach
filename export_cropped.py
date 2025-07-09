@@ -36,7 +36,7 @@ with open(DATA_SET_ROOT + '/targets.csv', encoding='utf-8', newline='') as f:
 index = 0
 for i in range(len(seat_coords)):
     seatx, seaty = seat_coords[i]
-    for image_index in range(len(images)):
+    for image_index in range(len(images), int(len(images) / 6)):
         if seat_numbers[i] in targetsNums:
             classification = 'non_person'
             break
@@ -46,7 +46,7 @@ for i in range(len(seat_coords)):
         
         classification = "person"
        
-        path = 'resNet_Images/' + classification + '/' + str(index) + '.jpg'
+        path = 'resNet_Images/train/person/chap' + str(index) + '.jpg'
         cv.imwrite(path,seat_cropped)
         index += 1
     print(f"PROGRESS{100 * i / len(seat_coords)} %")
