@@ -44,15 +44,16 @@ for n in range(3):
         img = Image.open(imgDir)
         #print("IMG OPJECT: " + str(img))
         labelsDir = imgDir.replace("images", "labels").replace('jpg','txt')
+        width, height = img.size
         #print("LABEL: " + labelsDir)
         
         negsFromImg = 0
 
         while negsFromImg < 0.01: 
-            centX = random.random()
-            centY = random.random()
-            w = 0.5#random.random()
-            h = 0.5#random.random()
+            centX = 0.5#random.random()
+            centY = 0.5#random.random()
+            w = random.random()
+            h = random.random()
 
             centX *= width
             centY *= height
