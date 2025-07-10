@@ -34,7 +34,7 @@ val_transforms = transforms.Compose([
 
 train_dataset = ImageFolder("./resNet_Images/train", transform=train_transforms)
 val_dataset = ImageFolder("./resNet_Images/val", transform=val_transforms)
-test_dataset = ImageFolder("./resNet_Images/test")
+#test_dataset = ImageFolder("./resNet_Images/test")
 
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
