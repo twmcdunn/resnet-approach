@@ -29,7 +29,7 @@ train_transforms = transforms.Compose([
     transforms.RandomHorizontalFlip(0.5),
     transforms.RandomRotation(10),
     transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.2, hue=0.1),
-    transforms.Grayscale(),
+    transforms.Grayscale(num_output_channels=3),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
@@ -54,10 +54,10 @@ print(f"Training samples: {len(train_dataset)}")
 print(f"Validation samples: {len(val_dataset)}")
 
 # Count samples per class
-# train_labels = [train_dataset[i][1] for i in range(len(train_dataset))]
-# val_labels = [val_dataset[i][1] for i in range(len(val_dataset))]
-# print(f"Training class distribution: {Counter(train_labels)}")
-# print(f"Validation class distribution: {Counter(val_labels)}")
+train_labels = [train_dataset[i][1] for i in range(len(train_dataset))]
+val_labels = [val_dataset[i][1] for i in range(len(val_dataset))]
+print(f"Training class distribution: {Counter(train_labels)}")
+print(f"Validation class distribution: {Counter(val_labels)}")
 
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
