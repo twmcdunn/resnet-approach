@@ -79,7 +79,7 @@ def do_boxes_overlap(box1, box2):
 
     return True  # Boxes overlap
 
-
+assert 0 == 1, "exiting so we don't generate negatives"
 negCount = 0
 for n in range(3):
     imgFolder = 'loaf_data/images' + dirArr[n]
