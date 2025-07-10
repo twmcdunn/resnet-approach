@@ -36,7 +36,7 @@ with open(DATA_SET_ROOT + '/targets.csv', encoding='utf-8', newline='') as f:
 index = 0
 for i in range(len(seat_coords)):
     seatx, seaty = seat_coords[i]
-    for image_index in range(0,len(images), int(len(images) / 3)):
+    for image_index in range(0,len(images), int(len(images) / 2)):
         print("IMAGE InDEX " + str(image_index))
         if seat_numbers[i] in targetsNums:
             classification = 'non_person'
