@@ -3,7 +3,7 @@ import json
 import csv, sys
 from os import listdir
 
-DATA_SET_ROOT = 'trials/1_reolink1_wheaton_academy'
+DATA_SET_ROOT = 'trials/1_reolink1_wheaton_academy'#'trials/1_reolink1_wheaton_academy'
 
 SEAT_WIDTH = 99
 SEAT_HEIGHT = 76
@@ -36,8 +36,8 @@ with open(DATA_SET_ROOT + '/targets.csv', encoding='utf-8', newline='') as f:
 index = 0
 for i in range(len(seat_coords)):
     seatx, seaty = seat_coords[i]
-    for image_index in range(0,len(images), int(len(images) / 2)):
-        print("IMAGE InDEX " + str(image_index))
+    for image_index in range(1):#range(0,len(images), int(len(images) / 2)):
+        #print("IMAGE InDEX " + str(image_index))
         if seat_numbers[i] in targetsNums:
             classification = 'non_person'
             break
@@ -47,7 +47,7 @@ for i in range(len(seat_coords)):
         
         classification = "person"
        
-        path = 'resNet_Images/train/person/chap' + str(index) + '.jpg'
+        path = 'personsa/a' + str(index) + '.jpg'
         cv.imwrite(path,seat_cropped)
         index += 1
     #print(f"PROGRESS{100 * i / len(seat_coords)} %")

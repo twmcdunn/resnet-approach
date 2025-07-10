@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch
 from PIL import Image
 import torchvision.transforms as transforms
+from os import listdir
 
 model = models.resnet50()
 # Replace the final fully connected layer for binary classification
@@ -33,10 +34,11 @@ def predict_image(model, image_path, transform):
         outputs = model(image)
         probabilities = torch.nn.functional.softmax(outputs[0], dim=0)
         _, predicted = torch.max(outputs, 1)
+        print(str(outputs))
     
     return predicted.item(), probabilities.cpu().numpy()
 
 # Example usage
-prediction, probs = predict_image(model, 'ss1.jpg', transforms)
+prediction, probs = predict_image(model, 'ss3.png', transforms)
 print(f'Predicted class: {prediction}')
 print(f'Probabilities: {probs}')

@@ -4,6 +4,7 @@ from torchvision import transforms
 from PIL import Image
 from pycocotools.coco import COCO
 from tqdm import tqdm
+import random
 
 # Paths
 coco_root = './coco'
@@ -38,10 +39,18 @@ for cat_id in category_ids:
     image_ids = coco.getImgIds(catIds=[cat_id])
     image_ids_with_targets.update(image_ids)
 
-image_ids_with_person = set(coco.getImgIds(coco.getCatIds(catNms=['person'])))
+image_ids_with_person = set()
+personCatID = coco.getCatIds(catNms=['person'])
+print(f"person cat id: {personCatID}")
+personImgIDs = coco.getImgIds(catIds=personCatID)
+
+image_ids_with_person.update(personImgIDs)
+print(f"person set: {image_ids_with_person}")
 
 image_ids = image_ids_with_targets - image_ids_with_person
 
+print(f"Images with target classes: {len(image_ids_with_targets)} images with person class: {len(image_ids_with_person)} diff = {len(image_ids)}")
+#assert 0 == 1, "exiting"
 print(f"Found {len(image_ids)} images with target categories.")
 assert len(image_ids) > 0, "Can't find images with target categories!"
 
@@ -59,15 +68,18 @@ for img_id in tqdm(image_ids, desc="Extracting and transforming images"):
     img_path = os.path.join(img_dir, img_info['file_name'])
     try:
         img = Image.open(img_path).convert('RGB')
-        ann_ids = coco.getAnnIds(imgIds=[img_id])
-        anns = coco.loadAnns(ann_ids)
-        for ann in anns:
-            if ann['category_id'] in category_ids:
-                x,y,w,h = ann['bbox']
-                if w < 230 or h < 230:
-                    continue
-                cropped = img.crop((x,y,x+w,y+h))
-                #cropped = transform(cropped)
-                cropped.save(os.path.join(output_dir, str(ann['category_id']) + "_" + img_info['file_name']))
+        # ann_ids = coco.getAnnIds(imgIds=[img_id])
+        # anns = coco.loadAnns(ann_ids)
+        # for ann in anns:
+        #     if ann['category_id'] in category_ids:
+        #         x,y,w,h = ann['bbox']
+        #         if w-x < 150 or h-y < 150:
+        #             continue
+        #         #cropped = img.crop((x,y,x+w,y+h))
+        #         cropped = img.crop((x,y,w,h))
+        #         #cropped = transform(cropped)
+        #         img = img.crop(())
+        img = img.crop((0,0,random.uniform(150,250),random.uniform(150,250)))
+        img.save(os.path.join(output_dir, "neg_" + img_info['file_name']))
     except Exception as e:
         print(f"Failed to process {img_path}: {e}")

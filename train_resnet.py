@@ -5,8 +5,16 @@ import torchvision.transforms as transforms
 import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader, Dataset
+from collections import Counter
 
 model = models.resnet50(weights = models.ResNet50_Weights.DEFAULT)
+# Only freeze early layers, unfreeze later ones
+# for name, param in model.named_parameters():
+#     if 'layer4' in name or 'fc' in name:  # Unfreeze last block + classifier
+#         param.requires_grad = True
+#     else:
+#         param.requires_grad = False
+
 # Freeze feature extraction layers (optional - for faster training) # what is model.parameters() and what is requries_grad
 for param in model.parameters():
     param.requires_grad = False
@@ -21,6 +29,7 @@ train_transforms = transforms.Compose([
     transforms.RandomHorizontalFlip(0.5),
     transforms.RandomRotation(10),
     transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
+    transforms.Grayscale(),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
@@ -36,6 +45,20 @@ train_dataset = ImageFolder("./resNet_Images/train", transform=train_transforms)
 val_dataset = ImageFolder("./resNet_Images/val", transform=val_transforms)
 #test_dataset = ImageFolder("./resNet_Images/test")
 
+
+# Add these debugging lines after creating your datasets
+print("Dataset class mapping:")
+print(f"Classes: {train_dataset.classes}")
+print(f"Class to index: {train_dataset.class_to_idx}")
+print(f"Training samples: {len(train_dataset)}")
+print(f"Validation samples: {len(val_dataset)}")
+
+# Count samples per class
+train_labels = [train_dataset[i][1] for i in range(len(train_dataset))]
+val_labels = [val_dataset[i][1] for i in range(len(val_dataset))]
+print(f"Training class distribution: {Counter(train_labels)}")
+print(f"Validation class distribution: {Counter(val_labels)}")
+
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
 
@@ -48,6 +71,39 @@ optimizer = optim.Adam(model.fc.parameters(), lr=0.001)  # Only train the classi
 
 # Learning rate scheduler
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1) #don't understand
+
+def analyze_predictions(model, val_loader, device):
+    model.eval()
+    all_preds = []
+    all_labels = []
+    
+    with torch.no_grad():
+        for inputs, labels in val_loader:
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+            
+            outputs = model(inputs)
+            _, preds = torch.max(outputs, 1)
+            
+            all_preds.extend(preds.cpu().numpy())
+            all_labels.extend(labels.cpu().numpy())
+    
+    pred_counter = Counter(all_preds)
+    label_counter = Counter(all_labels)
+    
+    print(f"Prediction distribution: {pred_counter}")
+    print(f"True label distribution: {label_counter}")
+    
+    # Calculate per-class accuracy
+    correct_0 = sum(1 for p, l in zip(all_preds, all_labels) if p == 0 and l == 0)
+    correct_1 = sum(1 for p, l in zip(all_preds, all_labels) if p == 1 and l == 1)
+    total_0 = label_counter[0]
+    total_1 = label_counter[1]
+    
+    if total_0 > 0:
+        print(f"Class 0 accuracy: {correct_0/total_0:.4f}")
+    if total_1 > 0:
+        print(f"Class 1 accuracy: {correct_1/total_1:.4f}")
 
 
 #training loop
@@ -111,6 +167,8 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
             best_val_acc = val_epoch_acc
             torch.save(model.state_dict(), 'best_model.pth')
         
+        analyze_predictions(model, val_loader, device)
+
         scheduler.step()
         print()
     
