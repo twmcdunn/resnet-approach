@@ -93,7 +93,8 @@ criterion = nn.CrossEntropyLoss(weight=class_weights)
 optimizer = optim.Adam(model.classifier.parameters(), lr=0.0001, weight_decay=1e-4)  # Only train the classifier .. what is fc.parameters()
 
 # Learning rate scheduler
-scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1) #don't understand
+#scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1) #don't understand
+scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=3, factor=0.5)
 
 def analyze_predictions(model, val_loader, device):
     model.eval()
@@ -128,6 +129,23 @@ def analyze_predictions(model, val_loader, device):
     if total_1 > 0:
         print(f"Class 1 accuracy: {correct_1/total_1:.4f}")
 
+def calculate_adaptive_weights(all_preds, smoothing_factor=0.1):
+    """Calculate class weights based on prediction distribution"""
+    pred_counter = Counter(all_preds)
+    total_preds = len(all_preds)
+    
+    # Calculate prediction ratios
+    pred_ratio_0 = pred_counter.get(0, 0) / total_preds
+    pred_ratio_1 = pred_counter.get(1, 0) / total_preds
+    
+    # Inverse weighting with smoothing
+    if pred_ratio_0 > 0 and pred_ratio_1 > 0:
+        weight_0 = (0.5 / pred_ratio_0) * smoothing_factor + 1.0 * (1 - smoothing_factor)
+        weight_1 = (0.5 / pred_ratio_1) * smoothing_factor + 1.0 * (1 - smoothing_factor)
+    else:
+        weight_0, weight_1 = 1.0, 1.0
+    
+    return torch.tensor([weight_0, weight_1])
 
 #training loop
 def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler, num_epochs=25):
@@ -141,6 +159,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
         model.train()
         running_loss = 0.0
         running_corrects = 0
+        epoch_preds = []
         
         for inputs, labels in train_loader:
             inputs = inputs.to(device)
@@ -157,6 +176,13 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
             
             running_loss += loss.item() * inputs.size(0)
             running_corrects += torch.sum(preds == labels.data)
+            epoch_preds.extend(preds.cpu().numpy())
+
+        # Calculate new weights for next epoch
+        if epoch < num_epochs - 1:  # Don't update on last epoch
+            new_weights = calculate_adaptive_weights(epoch_preds)
+            criterion = nn.CrossEntropyLoss(weight=new_weights)
+            print(f"Updated class weights: {new_weights}")
         
         epoch_loss = running_loss / len(train_dataset)
         epoch_acc = running_corrects.double() / len(train_dataset)
