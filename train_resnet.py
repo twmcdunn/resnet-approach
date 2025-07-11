@@ -7,7 +7,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, Dataset
 from collections import Counter
 
-model = models.resnet50(weights = models.ResNet50_Weights.DEFAULT)
+model = models.efficientnet_b0(weights = models.EfficientNet_B0_Weights.DEFAULT)#models.resnet50(weights = models.ResNet50_Weights.DEFAULT)
 # Only freeze early layers, unfreeze later ones
 # for name, param in model.named_parameters():
 #     if 'layer4' in name or 'fc' in name:  # Unfreeze last block + classifier
@@ -19,9 +19,13 @@ model = models.resnet50(weights = models.ResNet50_Weights.DEFAULT)
 for param in model.parameters():
     param.requires_grad = False
 
+    # Unfreeze only the classifier
+for param in model.classifier.parameters():
+    param.requires_grad = True
+
 # Replace the final fully connected layer for binary classification
-num_features = model.fc.in_features
-model.fc = nn.Linear(num_features, 2)  # 2 classes for binary classification
+num_features = model.classifier[-1].in_features
+model.classifier = nn.Linear(num_features, 2)  # 2 classes for binary classification
 
 # Data augmentation for training
 train_transforms = transforms.Compose([
@@ -65,15 +69,15 @@ val_labels = [val_dataset[i][1] for i in range(len(val_dataset))]
 print(f"Training class distribution: {Counter(train_labels)}")
 print(f"Validation class distribution: {Counter(val_labels)}")
 
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
-val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=1)
+val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=1)
 
 device = torch.device('cpu')
 model = model.to(device)
 
 # Define loss function and optimizer
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.fc.parameters(), lr=0.0001, weight_decay=1e-4)  # Only train the classifier .. what is fc.parameters()
+optimizer = optim.Adam(model.classifier.parameters(), lr=0.0001, weight_decay=1e-4)  # Only train the classifier .. what is fc.parameters()
 
 # Learning rate scheduler
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1) #don't understand
