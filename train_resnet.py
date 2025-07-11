@@ -26,7 +26,11 @@ for param in model.classifier.parameters():
 
 # Replace the final fully connected layer for binary classification
 num_features = model.classifier[-1].in_features
-model.classifier = nn.Linear(num_features, 2)  # 2 classes for binary classification
+# model.classifier = nn.Linear(num_features, 2)  # 2 classes for binary classification
+model.classifier = nn.Sequential(
+    nn.Dropout(p=0.2, inplace=True),  # Keep this
+    nn.Linear(num_features, 2)
+)
 
 # Data augmentation for training
 train_transforms = transforms.Compose([
