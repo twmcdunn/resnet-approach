@@ -34,7 +34,7 @@ model.classifier = nn.Sequential(
 
 # Data augmentation for training
 train_transforms = transforms.Compose([
-     transforms.Resize((256, 256)),  # Resize larger first
+    transforms.Resize((256, 256)),  # Resize larger first
     transforms.RandomResizedCrop(224, scale=(0.7, 1.0)),  # Random crop with scaling
     transforms.Grayscale(num_output_channels=3),
     transforms.RandomHorizontalFlip(0.5),
@@ -80,8 +80,16 @@ val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4
 device = torch.device('cpu')
 model = model.to(device)
 
+
+# Based on how often each class appears in predictions
+person_predictions = 211
+not_person_predictions = 101
+
+# Weight inversely to prediction frequency
+class_weights = torch.tensor([1.0, 101/211])  # ≈ [1.0, 0.48]
+
 # Define loss function and optimizer
-criterion = nn.CrossEntropyLoss()
+criterion = nn.CrossEntropyLoss(weight=class_weights)
 optimizer = optim.Adam(model.classifier.parameters(), lr=0.0001, weight_decay=1e-4)  # Only train the classifier .. what is fc.parameters()
 
 # Learning rate scheduler
