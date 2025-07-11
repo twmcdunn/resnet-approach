@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader, Dataset
 from collections import Counter
 
 model = models.efficientnet_b0(weights = models.EfficientNet_B0_Weights.DEFAULT)#models.resnet50(weights = models.ResNet50_Weights.DEFAULT)
+print(model)
 # Only freeze early layers, unfreeze later ones
 # for name, param in model.named_parameters():
 #     if 'layer4' in name or 'fc' in name:  # Unfreeze last block + classifier
@@ -69,8 +70,8 @@ val_labels = [val_dataset[i][1] for i in range(len(val_dataset))]
 print(f"Training class distribution: {Counter(train_labels)}")
 print(f"Validation class distribution: {Counter(val_labels)}")
 
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=1)
-val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=1)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
+val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
 
 device = torch.device('cpu')
 model = model.to(device)

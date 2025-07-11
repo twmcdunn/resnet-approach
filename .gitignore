@@ -3,6 +3,7 @@ coco/*
 coco_personal_belongings/*
 resNet_Images/*
 negativesFromEdman/*
+best_model.pth
 <<<<<<< HEAD
 persona/*
 personb/*
