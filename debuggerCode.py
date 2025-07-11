@@ -28,8 +28,8 @@ val_transforms = transforms.Compose([
 
 train_dataset = ImageFolder(train_path, transform=train_transforms)
 val_dataset = ImageFolder(val_path, transform=val_transforms)
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
-val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=0)
+val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=0)
 
 print("=== FOLDER STRUCTURE ===")
 for split, path in [("Train", train_path), ("Val", val_path)]:

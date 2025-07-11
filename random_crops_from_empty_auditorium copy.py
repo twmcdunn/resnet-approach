@@ -17,7 +17,7 @@ images = listdir(IMAGE_PATH)
 assert len(images) > 0, "Can't find images!"
 
 numOfNegatives = 1000
-numOfEdmanNegatives = int(numOfNegatives / 2)
+numOfEdmanNegatives = 550#int(numOfNegatives / 2)
 
 FIRST_INDEX = (numOfNegatives - numOfEdmanNegatives) + 1
 for i in range(numOfEdmanNegatives):

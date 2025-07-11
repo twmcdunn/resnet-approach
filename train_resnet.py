@@ -25,13 +25,18 @@ model.fc = nn.Linear(num_features, 2)  # 2 classes for binary classification
 
 # Data augmentation for training
 train_transforms = transforms.Compose([
-    transforms.Resize((224, 224)),
-    transforms.RandomHorizontalFlip(0.5),
-    transforms.RandomRotation(10),
-    transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.2, hue=0.1),
+     transforms.Resize((256, 256)),  # Resize larger first
+    transforms.RandomResizedCrop(224, scale=(0.7, 1.0)),  # Random crop with scaling
     transforms.Grayscale(num_output_channels=3),
+    transforms.RandomHorizontalFlip(0.5),
+    transforms.RandomVerticalFlip(0.5),  # People from overhead can be flipped vertically
+    transforms.RandomRotation(30),
+    transforms.ColorJitter(brightness=0.5, contrast=0.5),
+    transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), scale=(0.9, 1.1)),
+    transforms.RandomPerspective(distortion_scale=0.2, p=0.3),
     transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    transforms.RandomErasing(p=0.2, scale=(0.02, 0.2))  # Random erasing
 ])
 
 # No augmentation for validation
@@ -68,7 +73,7 @@ model = model.to(device)
 
 # Define loss function and optimizer
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.fc.parameters(), lr=0.001)  # Only train the classifier .. what is fc.parameters()
+optimizer = optim.Adam(model.fc.parameters(), lr=0.0001, weight_decay=1e-4)  # Only train the classifier .. what is fc.parameters()
 
 # Learning rate scheduler
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1) #don't understand

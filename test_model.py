@@ -21,6 +21,7 @@ print("Model loaded successfully!")
 
 transforms = transforms.Compose([
     transforms.Resize((224, 224)),
+    transforms.Grayscale(num_output_channels=3),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
@@ -39,6 +40,6 @@ def predict_image(model, image_path, transform):
     return predicted.item(), probabilities.cpu().numpy()
 
 # Example usage
-prediction, probs = predict_image(model, 'ss3.png', transforms)
+prediction, probs = predict_image(model, 'ss4.png', transforms)
 print(f'Predicted class: {prediction}')
 print(f'Probabilities: {probs}')
