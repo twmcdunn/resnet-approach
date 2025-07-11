@@ -218,7 +218,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
         
         analyze_predictions(model, val_loader, device)
 
-        scheduler.step()
+        scheduler.step(val_epoch_loss)
         print()
     
     return model
