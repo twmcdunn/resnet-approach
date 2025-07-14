@@ -7,8 +7,14 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, Dataset
 from collections import Counter
 
-model = models.efficientnet_b0(weights = models.EfficientNet_B0_Weights.DEFAULT)#models.resnet50(weights = models.ResNet50_Weights.DEFAULT)
+# model = models.efficientnet_b0(weights = models.EfficientNet_B0_Weights.DEFAULT)#models.resnet50(weights = models.ResNet50_Weights.DEFAULT)
+# print(model)
+
+model = models.efficientnet_v2_s(weights = models.EfficientNet_V2_S_Weights.DEFAULT)#models.resnet50(weights = models.ResNet50_Weights.DEFAULT)
 print(model)
+
+
+
 # Only freeze early layers, unfreeze later ones
 # for name, param in model.named_parameters():
 #     if 'layer4' in name or 'fc' in name:  # Unfreeze last block + classifier
