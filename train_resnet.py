@@ -50,8 +50,8 @@ train_transforms = transforms.Compose([
     transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), scale=(0.9, 1.1)),
     transforms.RandomPerspective(distortion_scale=0.2, p=0.3),
     transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    transforms.RandomErasing(p=0.2, scale=(0.02, 0.2))  # Random erasing
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    #transforms.RandomErasing(p=0.2, scale=(0.02, 0.2))  # Random erasing
 ])
 
 # No augmentation for validation
