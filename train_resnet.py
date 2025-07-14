@@ -95,7 +95,7 @@ not_person_predictions = 101
 class_weights = torch.tensor([1.0, 101/211])  # ≈ [1.0, 0.48]
 
 # Define loss function and optimizer
-criterion = nn.CrossEntropyLoss(weight=class_weights)
+criterion = nn.CrossEntropyLoss()#weight=class_weights)
 optimizer = optim.Adam(model.classifier.parameters(), lr=0.0001, weight_decay=1e-4)  # Only train the classifier .. what is fc.parameters()
 
 # Learning rate scheduler
@@ -185,7 +185,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
             epoch_preds.extend(preds.cpu().numpy())
 
         # Calculate new weights for next epoch
-        if epoch < num_epochs - 1:  # Don't update on last epoch
+        if False and epoch < num_epochs - 1:  # Don't update on last epoch
             new_weights = calculate_adaptive_weights(epoch_preds)
             criterion = nn.CrossEntropyLoss(weight=new_weights)
             print(f"Updated class weights: {new_weights}")
