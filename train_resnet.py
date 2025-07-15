@@ -135,7 +135,7 @@ def analyze_predictions(model, val_loader, device):
     if total_1 > 0:
         print(f"Class 1 accuracy: {correct_1/total_1:.4f}")
 
-def calculate_adaptive_weights(all_preds, smoothing_factor=0.1):
+def calculate_adaptive_weights(all_preds, smoothing_factor=1):
     """Calculate class weights based on prediction distribution"""
     pred_counter = Counter(all_preds)
     total_preds = len(all_preds)
@@ -150,6 +150,8 @@ def calculate_adaptive_weights(all_preds, smoothing_factor=0.1):
         weight_1 = (0.5 / pred_ratio_1) * smoothing_factor + 1.0 * (1 - smoothing_factor)
     else:
         weight_0, weight_1 = 1.0, 1.0
+    
+    print("ASSIGNING WEIGHTS: " + str(weight_0) + " " + str(weight_1))
     
     return torch.tensor([weight_0, weight_1])
 
@@ -185,7 +187,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
             epoch_preds.extend(preds.cpu().numpy())
 
         # Calculate new weights for next epoch
-        if False and epoch < num_epochs - 1:  # Don't update on last epoch
+        if epoch < num_epochs - 1:  # Don't update on last epoch
             new_weights = calculate_adaptive_weights(epoch_preds)
             criterion = nn.CrossEntropyLoss(weight=new_weights)
             print(f"Updated class weights: {new_weights}")
