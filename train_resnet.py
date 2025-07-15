@@ -144,12 +144,14 @@ def calculate_adaptive_weights(all_preds, smoothing_factor=1):
     pred_ratio_0 = pred_counter.get(0, 0) / total_preds
     pred_ratio_1 = pred_counter.get(1, 0) / total_preds
     
-    # Inverse weighting with smoothing
-    if pred_ratio_0 > 0 and pred_ratio_1 > 0:
-        weight_0 = (0.5 / pred_ratio_0) * smoothing_factor + 1.0 * (1 - smoothing_factor)
-        weight_1 = (0.5 / pred_ratio_1) * smoothing_factor + 1.0 * (1 - smoothing_factor)
-    else:
-        weight_0, weight_1 = 1.0, 1.0
+    # # Inverse weighting with smoothing
+    # if pred_ratio_0 > 0 and pred_ratio_1 > 0:
+    #     weight_0 = (0.5 / pred_ratio_0) * smoothing_factor + 1.0 * (1 - smoothing_factor)
+    #     weight_1 = (0.5 / pred_ratio_1) * smoothing_factor + 1.0 * (1 - smoothing_factor)
+    # else:
+    #     weight_0, weight_1 = 1.0, 1.0
+    weight_0 = (0.5 / pred_ratio_1) * smoothing_factor + 1.0 * (1 - smoothing_factor)
+    weight_1 = (0.5 / pred_ratio_0) * smoothing_factor + 1.0 * (1 - smoothing_factor)
     
     print("ASSIGNING WEIGHTS: " + str(weight_0) + " " + str(weight_1))
     
