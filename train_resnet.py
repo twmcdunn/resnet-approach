@@ -40,9 +40,10 @@ model.classifier = nn.Sequential(
 
 # Data augmentation for training
 train_transforms = transforms.Compose([
-    transforms.Resize((400, 400)),  # Resize larger first
-    transforms.RandomResizedCrop(384, scale=(0.7, 1.0)),  # Random crop with scaling
+    #transforms.Resize((400, 400)),  # Resize larger first
+    #transforms.RandomResizedCrop(384, scale=(0.7, 1.0)),  # Random crop with scaling
     # transforms.Grayscale(num_output_channels=3),
+    transforms.Resize((384,384)),
     transforms.RandomHorizontalFlip(0.5),
     transforms.RandomVerticalFlip(0.5),  # People from overhead can be flipped vertically
     transforms.RandomRotation(30),
