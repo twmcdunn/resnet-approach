@@ -95,7 +95,7 @@ not_person_predictions = 101
 class_weights = torch.tensor([1.0, 101/211])  # ≈ [1.0, 0.48]
 
 # Define loss function and optimizer
-criterion = nn.CrossEntropyLoss(weight=torch.tensor([0.48, 1.0]))#weight=class_weights)
+criterion = nn.CrossEntropyLoss()#weight=torch.tensor([0.48, 1.0]))#weight=class_weights)
 optimizer = optim.Adam(model.classifier.parameters(), lr=0.0001, weight_decay=1e-4)  # Only train the classifier .. what is fc.parameters()
 
 # Learning rate scheduler
