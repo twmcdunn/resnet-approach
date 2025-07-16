@@ -30,6 +30,9 @@ for param in model.parameters():
 for param in model.classifier.parameters():
     param.requires_grad = True
 
+for param in model.features[-2:].parameters():  # Unfreeze last 2 blocks
+    param.requires_grad = True
+
 # Replace the final fully connected layer for binary classification
 num_features = model.classifier[-1].in_features
 # model.classifier = nn.Linear(num_features, 2)  # 2 classes for binary classification
@@ -97,8 +100,11 @@ class_weights = torch.tensor([1.0, 101/211])  # ≈ [1.0, 0.48]
 
 # Define loss function and optimizer
 criterion = nn.CrossEntropyLoss()#weight=torch.tensor([0.48, 1.0]))#weight=class_weights)
-optimizer = optim.Adam(model.classifier.parameters(), lr=1e-3, weight_decay=1e-4)  # Only train the classifier .. what is fc.parameters()
-
+#optimizer = optim.Adam(model.classifier.parameters(), lr=1e-3, weight_decay=1e-4)  # Only train the classifier .. what is fc.parameters()
+optimizer = torch.optim.Adam([
+    {'params': model.classifier.parameters(), 'lr': 1e-3},
+    {'params': model.features[-2:].parameters(), 'lr': 1e-4}
+], weight_decay=1e-4)
 # Learning rate scheduler
 #scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1) #don't understand
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=3, factor=0.5)
