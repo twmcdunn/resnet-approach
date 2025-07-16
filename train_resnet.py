@@ -40,8 +40,8 @@ model.classifier = nn.Sequential(
 
 # Data augmentation for training
 train_transforms = transforms.Compose([
-    transforms.Resize((256, 256)),  # Resize larger first
-    transforms.RandomResizedCrop(224, scale=(0.7, 1.0)),  # Random crop with scaling
+    transforms.Resize((400, 400)),  # Resize larger first
+    transforms.RandomResizedCrop(384, scale=(0.7, 1.0)),  # Random crop with scaling
     # transforms.Grayscale(num_output_channels=3),
     transforms.RandomHorizontalFlip(0.5),
     transforms.RandomVerticalFlip(0.5),  # People from overhead can be flipped vertically
@@ -56,7 +56,7 @@ train_transforms = transforms.Compose([
 
 # No augmentation for validation
 val_transforms = transforms.Compose([
-    transforms.Resize((224, 224)),
+    transforms.Resize((384,384)),
     # transforms.Grayscale(num_output_channels=3),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
@@ -96,7 +96,7 @@ class_weights = torch.tensor([1.0, 101/211])  # ≈ [1.0, 0.48]
 
 # Define loss function and optimizer
 criterion = nn.CrossEntropyLoss()#weight=torch.tensor([0.48, 1.0]))#weight=class_weights)
-optimizer = optim.Adam(model.classifier.parameters(), lr=0.0001, weight_decay=1e-4)  # Only train the classifier .. what is fc.parameters()
+optimizer = optim.Adam(model.classifier.parameters(), lr=1e-3, weight_decay=1e-4)  # Only train the classifier .. what is fc.parameters()
 
 # Learning rate scheduler
 #scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1) #don't understand
