@@ -11,16 +11,38 @@ from collections import Counter
 # print(model)
 
 model = models.efficientnet_v2_s(weights = models.EfficientNet_V2_S_Weights.DEFAULT)#models.resnet50(weights = models.ResNet50_Weights.DEFAULT)
-print(model)
+#print(model)
 
+loadPartiallyTrained = True
 
+if loadPartiallyTrained:
+    modelPath = 'best_model.pth'
+    model = models.efficientnet_v2_s(pretrained = False)
+    # Replace the final fully connected layer for binary classification
+    num_features = model.classifier[-1].in_features
+    # model.classifier = nn.Linear(num_features, 2)  # 2 classes for binary classification
+    model.classifier = nn.Sequential(
+        nn.Dropout(p=0.2, inplace=True),  # Keep this
+        nn.Linear(num_features, 2)
+    )
 
-# Only freeze early layers, unfreeze later ones
-# for name, param in model.named_parameters():
-#     if 'layer4' in name or 'fc' in name:  # Unfreeze last block + classifier
-#         param.requires_grad = True
-#     else:
-#         param.requires_grad = False
+    device = torch.device('cpu')
+    model.load_state_dict(torch.load(modelPath,map_location=device))
+else: 
+    # Only freeze early layers, unfreeze later ones
+    # for name, param in model.named_parameters():
+    #     if 'layer4' in name or 'fc' in name:  # Unfreeze last block + classifier
+    #         param.requires_grad = True
+    #     else:
+    #         param.requires_grad = False
+
+    # Replace the final fully connected layer for binary classification
+    num_features = model.classifier[-1].in_features
+    # model.classifier = nn.Linear(num_features, 2)  # 2 classes for binary classification
+    model.classifier = nn.Sequential(
+        nn.Dropout(p=0.2, inplace=True),  # Keep this
+        nn.Linear(num_features, 2)
+    )
 
 # Freeze feature extraction layers (optional - for faster training) # what is model.parameters() and what is requries_grad
 for param in model.parameters():
@@ -32,14 +54,6 @@ for param in model.classifier.parameters():
 
 for param in model.features[-2:].parameters():  # Unfreeze last 2 blocks
     param.requires_grad = True
-
-# Replace the final fully connected layer for binary classification
-num_features = model.classifier[-1].in_features
-# model.classifier = nn.Linear(num_features, 2)  # 2 classes for binary classification
-model.classifier = nn.Sequential(
-    nn.Dropout(p=0.2, inplace=True),  # Keep this
-    nn.Linear(num_features, 2)
-)
 
 # Data augmentation for training
 train_transforms = transforms.Compose([
