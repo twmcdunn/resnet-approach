@@ -30,7 +30,7 @@ for param in model.parameters():
 for param in model.classifier.parameters():
     param.requires_grad = True
 
-for param in model.features[-1:].parameters():  # Unfreeze last 2 blocks
+for param in model.features[-2:].parameters():  # Unfreeze last 2 blocks
     param.requires_grad = True
 
 # Replace the final fully connected layer for binary classification
@@ -103,7 +103,7 @@ criterion = nn.CrossEntropyLoss()#weight=torch.tensor([0.48, 1.0]))#weight=class
 # optimizer = optim.Adam(model.classifier.parameters(), lr=1e-3, weight_decay=1e-4)  # Only train the classifier .. what is fc.parameters()
 optimizer = torch.optim.Adam([
     {'params': model.classifier.parameters(), 'lr': 1e-3},
-    {'params': model.features[-1:].parameters(), 'lr': 1e-4}
+    {'params': model.features[-2:].parameters(), 'lr': 1e-4}
 ], weight_decay=1e-4)
 
 # Learning rate scheduler
@@ -242,4 +242,4 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
     return model
 
 # Train the model
-model = train_model(model, train_loader, val_loader, criterion, optimizer, scheduler, num_epochs=25)
+model = train_model(model, train_loader, val_loader, criterion, optimizer, scheduler, num_epochs=1)
