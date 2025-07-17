@@ -256,4 +256,4 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
     return model
 
 # Train the model
-model = train_model(model, train_loader, val_loader, criterion, optimizer, scheduler, num_epochs=1)
+model = train_model(model, train_loader, val_loader, criterion, optimizer, scheduler, num_epochs=100)
